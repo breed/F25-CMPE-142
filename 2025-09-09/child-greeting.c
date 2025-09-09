@@ -7,14 +7,22 @@
 int main() {
     char message_to_child[1024];
     char message_from_child[1024];
+    pid_t child[3];
 
-    strcpy(message_to_child, "hello child");
-    if (fork() == 0) {
-        printf("parent said %s\n", message_to_child);
-        strcpy(message_from_child, "hello parent");
-        exit(0);
+    for (int i =0; i < 3; i++) {
+        sprintf(message_to_child, "hello child %d", i);
+        child[i] = fork();
+        if (child[i] == 0) {
+            printf("parent said %s\n", message_to_child);
+            strcpy(message_from_child, "hello parent");
+            exit(0);
+        }
+        printf("%d started\n", child[i]);
     }
-    wait(NULL);
-    printf("child said %s\n", message_from_child);
+    for (int i = 0; i < 3; i++) {
+        pid_t pid = wait(NULL);
+        printf("%d finished\n", pid);
+        printf("child said %s\n", message_from_child);
+    }
     exit(0);
 }
