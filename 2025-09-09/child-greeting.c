@@ -14,7 +14,7 @@ int main() {
         child[i] = fork();
         if (child[i] == 0) {
             printf("parent said %s\n", message_to_child);
-            strcpy(message_from_child, "hello parent");
+            sprintf(message_from_child, "hello parent from %d", i);
             exit(0);
         }
         printf("%d started\n", child[i]);
