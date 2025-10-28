@@ -8,8 +8,9 @@ static volatile int counter = 0;
 static volatile int locked = 0;
 
 void lock() {
-    while (locked);
-    locked = 1;
+    while (atomic_exchange(&locked, 1) != 0);
+    //while (locked != 0);
+    //locked = 1;
 }
 
 void unlock() {
