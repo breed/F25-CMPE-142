@@ -30,12 +30,20 @@ int club_limit = 2;
 void *enter_club(void *v)
 {
     struct person *p = v;
-    while (club_count >= club_limit);
+    pthread_mutex_lock(&door);
+    while (club_count >= club_limit) {
+        pthread_cond_wait(&bell, &door);
+    }
     club_count++;
+    pthread_mutex_unlock(&door);
     printf("+ %s entered club\n", p->name);
     sleep(p->duration);
     printf("- %s left club after %d seconds\n", p->name, p->duration);
+    pthread_mutex_lock(&door);
     club_count--;
+    pthread_cond_signal(&bell);
+    pthread_mutex_unlock(&door);
+    printf("! %s actually left\n", p->name);
 }
 
 int main()
